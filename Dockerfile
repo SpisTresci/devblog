@@ -5,4 +5,10 @@ RUN apt-get update
 
 # Application staff
 
-RUN pip install mezzanine
+WORKDIR /data
+
+ADD ./requirements.txt /data/requirements.txt
+RUN pip install -r requirements.txt
+
+ADD . /data/
+
