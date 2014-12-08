@@ -1,7 +1,11 @@
+db:
+  image: postgres
 web:
   build: .
-  command: python /data/blog/manage.py runserver 0.0.0.0:8000
   ports:
     - "28000:8000"
+    - "20022:22"
   volumes:
     - .:/data
+  links:
+    - db
