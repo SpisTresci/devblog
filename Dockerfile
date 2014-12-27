@@ -25,25 +25,57 @@ EXPOSE 22
 ##################################################################################
 
 RUN apt-get -y install nginx
+RUN apt-get -y install libpq-dev
 RUN apt-get -y install python-psycopg2
 RUN apt-get -y install memcached
 RUN apt-get -y install supervisor
-RUN pip install gunicorn
 
 ##################################################################################
 # Application staff
 ##################################################################################
 
-WORKDIR /data
+RUN virtualenv /env/blog
+RUN pip install Mezzanine==3.1.10
+RUN pip install psycopg2==2.5.4
+RUN pip install gunicorn==19.1.1
+RUN pip install python-memcached==1.53
 
-ADD ./requirements.txt /data/requirements.txt
-RUN pip install -r requirements.txt
+# Because of error: https://gist.github.com/noisy/d13c18f831bf1fc2c2d3
 
-ADD . /data/
+# ENV LC_ALL en_US.UTF-8
+# ENV LANG en_US.UTF-8
+# 
+RUN locale-gen en_US.UTF-8
+RUN dpkg-reconfigure locales
+RUN update-locale
+
+# tell Nginx to stay foregrounded
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+
+ADD ./project /mezzanine/project
+WORKDIR /mezzanine/project
+RUN pip install -r /mezzanine/project/requirements.txt
 
 
-CMD /usr/sbin/sshd -D
-# CMD python blog/manage.py syncdb --noinput && python blog/manage.py runserver 0.0.0.0:8000 & /usr/sbin/sshd -D
+##################################################################################
+# Application Production Configuration
+##################################################################################
 
+ADD ./project/deploy/docker/crontab /etc/cron.d/blog
+ADD ./project/deploy/docker/gunicorn.conf.py /mezzanine/project/gunicorn.conf.py
+ADD ./project/deploy/docker/local_settings.py /mezzanine/project/local_settings.py
+ADD ./project/deploy/docker/nginx.conf /etc/nginx/sites-enabled/blog.conf
+ADD ./project/deploy/docker/supervisor.conf /etc/supervisor/conf.d/blog.conf
+
+CMD sleep 5 && \
+    python manage.py collectstatic --noinput && \
+    python manage.py syncdb --noinput && \
+    python manage.py migrate --noinput && \
+    /usr/bin/supervisord --nodaemon
 
 ENV DEBIAN_FRONTEND newt
+
+
+# CMD /usr/sbin/sshd -D
+# CMD /usr/bin/supervisord --nodaemon
+# ENV DEBIAN_FRONTEND newt

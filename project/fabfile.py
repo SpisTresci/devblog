@@ -55,6 +55,7 @@ env.reqs_path = conf.get("REQUIREMENTS_PATH", None)
 env.gunicorn_port = conf.get("GUNICORN_PORT", 8000)
 env.locale = conf.get("LOCALE", "en_US.UTF-8")
 
+env.password = 'root'
 env.secret_key = conf.get("SECRET_KEY", "")
 env.nevercache_key = conf.get("NEVERCACHE_KEY", "")
 
@@ -415,8 +416,7 @@ def create():
     with project():
         if env.reqs_path:
             pip("-r %s/%s" % (env.proj_path, env.reqs_path))
-        pip("gunicorn setproctitle south psycopg2 "
-            "django-compressor python-memcached")
+        pip("gunicorn setproctitle south psycopg2 django-compressor python-memcached")
         manage("createdb --noinput --nodata")
         python("from django.conf import settings;"
                "from django.contrib.sites.models import Site;"
@@ -495,18 +495,18 @@ def deploy():
     for name in get_templates():
         upload_template_and_reload(name)
     with project():
-        backup("last.db")
+        # backup("last.db")
         static_dir = static()
         if exists(static_dir):
             run("tar -cf last.tar %s" % static_dir)
         git = env.git
-        last_commit = "git rev-parse HEAD" if git else "hg id -i"
-        run("%s > last.commit" % last_commit)
-        with update_changed_requirements():
-            run("git pull origin master -f" if git else "hg pull && hg up -C")
+        # last_commit = "git rev-parse HEAD" if git else "hg id -i"
+        # run("%s > last.commit" % last_commit)
+        # with update_changed_requirements():
+        #     run("git pull origin master -f" if git else "hg pull && hg up -C")
         manage("collectstatic -v 0 --noinput")
         manage("syncdb --noinput")
-        manage("migrate --noinput")
+        #manage("migrate --noinput")
     restart()
     return True
 
