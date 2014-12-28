@@ -34,17 +34,15 @@ RUN apt-get -y install supervisor
 # Application staff
 ##################################################################################
 
-RUN virtualenv /env/blog
 RUN pip install Mezzanine==3.1.10
 RUN pip install psycopg2==2.5.4
 RUN pip install gunicorn==19.1.1
 RUN pip install python-memcached==1.53
+RUN pip install setproctitle==1.1.8
+RUN pip install South==1.0.2
+RUN pip install django-compressor==1.4
 
 # Because of error: https://gist.github.com/noisy/d13c18f831bf1fc2c2d3
-
-# ENV LC_ALL en_US.UTF-8
-# ENV LANG en_US.UTF-8
-# 
 RUN locale-gen en_US.UTF-8
 RUN dpkg-reconfigure locales
 RUN update-locale
@@ -52,20 +50,22 @@ RUN update-locale
 # tell Nginx to stay foregrounded
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-ADD ./project /mezzanine/project
-WORKDIR /mezzanine/project
-RUN pip install -r /mezzanine/project/requirements.txt
+ADD . /mezzanine-project
+WORKDIR /mezzanine-project
+RUN pip install -r /mezzanine-project/requirements.txt
+
+RUN mkdir -p /mezzanine-project/static/media
 
 
 ##################################################################################
 # Application Production Configuration
 ##################################################################################
 
-ADD ./project/deploy/docker/crontab /etc/cron.d/blog
-ADD ./project/deploy/docker/gunicorn.conf.py /mezzanine/project/gunicorn.conf.py
-ADD ./project/deploy/docker/local_settings.py /mezzanine/project/local_settings.py
-ADD ./project/deploy/docker/nginx.conf /etc/nginx/sites-enabled/blog.conf
-ADD ./project/deploy/docker/supervisor.conf /etc/supervisor/conf.d/blog.conf
+ADD ./deploy/docker/crontab /etc/cron.d/blog
+ADD ./deploy/docker/gunicorn.conf.py /mezzanine-project/gunicorn.conf.py
+ADD ./deploy/docker/local_settings.py /mezzanine-project/local_settings.py
+ADD ./deploy/docker/nginx.conf /etc/nginx/sites-enabled/blog.conf
+ADD ./deploy/docker/supervisor.conf /etc/supervisor/conf.d/blog.conf
 
 CMD sleep 5 && \
     python manage.py collectstatic --noinput && \
@@ -74,8 +74,3 @@ CMD sleep 5 && \
     /usr/bin/supervisord --nodaemon
 
 ENV DEBIAN_FRONTEND newt
-
-
-# CMD /usr/sbin/sshd -D
-# CMD /usr/bin/supervisord --nodaemon
-# ENV DEBIAN_FRONTEND newt

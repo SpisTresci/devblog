@@ -1,12 +1,15 @@
 from __future__ import absolute_import, unicode_literals
 
+_ = lambda s: s  # Dummy ugettext function, see Django 1.4 docs for info.
+
+
 ######################
 # MEZZANINE SETTINGS #
 ######################
 
 # The following settings are already defined with default values in
 # the ``defaults.py`` module within each of Mezzanine's apps, but are
-# common enough to be put here, commented out, for convenient
+# common enough to be put here, commented out, for conveniently
 # overriding. Please consult the settings documentation for a full list
 # of settings Mezzanine implements:
 # http://mezzanine.jupo.org/docs/configuration.html#default-settings
@@ -15,7 +18,7 @@ from __future__ import absolute_import, unicode_literals
 #
 # ADMIN_MENU_ORDER = (
 #     ("Content", ("pages.Page", "blog.BlogPost",
-#        "generic.ThreadedComment", ("Media Library", "fb_browse"),)),
+#        "generic.ThreadedComment", (_("Media Library"), "fb_browse"),)),
 #     ("Site", ("sites.Site", "redirects.Redirect", "conf.Setting")),
 #     ("Users", ("auth.User", "auth.Group",)),
 # )
@@ -37,9 +40,9 @@ from __future__ import absolute_import, unicode_literals
 # that doesn't appear in this setting, all pages will appear in it.
 
 # PAGE_MENU_TEMPLATES = (
-#     (1, "Top navigation bar", "pages/menus/dropdown.html"),
-#     (2, "Left-hand tree", "pages/menus/tree.html"),
-#     (3, "Footer", "pages/menus/footer.html"),
+#     (1, _("Top navigation bar"), "pages/menus/dropdown.html"),
+#     (2, _("Left-hand tree"), "pages/menus/tree.html"),
+#     (3, _("Footer"), "pages/menus/footer.html"),
 # )
 
 # A sequence of fields that will be injected into Mezzanine's (or any
@@ -58,7 +61,7 @@ from __future__ import absolute_import, unicode_literals
 #         # Dotted path to field class.
 #         "somelib.fields.ImageField",
 #         # Positional args for field class.
-#         ("Image",),
+#         (_("Image"),),
 #         # Keyword args for field class.
 #         {"blank": True, "upload_to": "blog"},
 #     ),
@@ -66,7 +69,7 @@ from __future__ import absolute_import, unicode_literals
 #     (
 #         "mezzanine.pages.models.Page.another_field",
 #         "IntegerField", # 'django.db.models.' is implied if path is omitted.
-#         ("Another name",),
+#         (_("Another name"),),
 #         {"blank": True, "default": 1},
 #     ),
 # )
@@ -94,7 +97,7 @@ MANAGERS = ADMINS
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = "*"
+ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -103,7 +106,7 @@ ALLOWED_HOSTS = "*"
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'Europe/Warsaw'
+TIME_ZONE = None
 
 # If you set this to True, Django will use timezone-aware datetimes.
 USE_TZ = True
@@ -113,7 +116,6 @@ USE_TZ = True
 LANGUAGE_CODE = "en"
 
 # Supported languages
-_ = lambda s: s
 LANGUAGES = (
     ('en', _('English')),
 )
@@ -150,7 +152,7 @@ AUTHENTICATION_BACKENDS = ("mezzanine.core.auth_backends.MezzanineBackend",)
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # "django.contrib.staticfiles.finders.DefaultStorageFinder",
 )
 
 # The numeric mode to set newly-uploaded files to. The value should be
@@ -167,7 +169,7 @@ DATABASES = {
         # Add "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
         "ENGINE": "django.db.backends.",
         # DB name or path to database file if using sqlite3.
-        "NAME": "dev.db",
+        "NAME": "",
         # Not used with sqlite3.
         "USER": "",
         # Not used with sqlite3.
@@ -248,8 +250,8 @@ INSTALLED_APPS = (
     "mezzanine.pages",
     "mezzanine.galleries",
     "mezzanine.twitter",
-    #"mezzanine.accounts",
-    #"mezzanine.mobile",
+    # "mezzanine.accounts",
+    # "mezzanine.mobile",
 )
 
 # List of processors used by RequestContext to populate the context.
