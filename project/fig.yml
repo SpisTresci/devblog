@@ -6,7 +6,7 @@ web:
   build: .
   ports:
     - "20022:22"
-    - "1080:80"
+    - "20080:80"
   volumes:
     - ./volumes/media:/mezzanine-project/static/media
   links:

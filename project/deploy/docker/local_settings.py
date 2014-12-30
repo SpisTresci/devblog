@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 SECRET_KEY = "b86ac743-6564-446b-9e69-b6bc84886f72e341d28e-54be-44df-b467-73985e0d6c1c391a5209-4e67-466e-a5de-5368c9dcef92"
 NEVERCACHE_KEY = "fd3dd1c2-0ad9-40e0-b384-8a952f2d309a62e310c9-010c-4cd6-be18-7c4ea1dfe7cacb70a3a8-cefe-4c86-92af-83b990fa6017"
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 
 DEBUG = False
 

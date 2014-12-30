@@ -64,8 +64,8 @@ RUN mkdir -p /mezzanine-project/static/media
 ADD ./deploy/docker/crontab /etc/cron.d/blog
 ADD ./deploy/docker/gunicorn.conf.py /mezzanine-project/gunicorn.conf.py
 ADD ./deploy/docker/local_settings.py /mezzanine-project/local_settings.py
-ADD ./deploy/docker/nginx.conf /etc/nginx/sites-enabled/blog.conf
-ADD ./deploy/docker/supervisor.conf /etc/supervisor/conf.d/blog.conf
+ADD ./deploy/docker/nginx.conf /etc/nginx/sites-enabled/default
+ADD ./deploy/docker/supervisor.conf /etc/supervisor/conf.d/mezzanine-project.conf
 
 CMD sleep 5 && \
     python manage.py collectstatic --noinput && \
