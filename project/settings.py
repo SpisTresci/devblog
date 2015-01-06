@@ -113,11 +113,12 @@ USE_TZ = True
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = "en"
+LANGUAGE_CODE = "pl"
 
 # Supported languages
 LANGUAGES = (
-    ('en', _('English')),
+    #('en', _('English')),
+    ('pl', _('Polish')),
 )
 
 # A boolean that turns on/off debug mode. When set to ``True``, stack traces
@@ -227,6 +228,8 @@ ROOT_URLCONF = "%s.urls" % PROJECT_DIRNAME
 # Don't forget to use absolute paths, not relative paths.
 TEMPLATE_DIRS = (os.path.join(PROJECT_ROOT, "templates"),)
 
+# BECAUSE HOMEPAGE IS A BLOG-ONLY SITE
+BLOG_SLUG = ''
 
 ################
 # APPLICATIONS #
