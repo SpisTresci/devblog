@@ -6,8 +6,10 @@ db:
 web:
   image: noisy/devblog
   ports:
-    - "20022:22"
-    - "80:80"
+    - "80"
+  environment:
+    - VIRTUAL_HOST=devblog.spistresci.pl
+    - VIRTUAL_PORT=80
   volumes_from:
     - data
   links:
