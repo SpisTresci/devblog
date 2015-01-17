@@ -1,2 +1,10 @@
 #!/bin/bash
-docker run --volumes-from project_data_1 -v $(pwd):/backup ubuntu tar -vxjf /backup/devblog-backup-latest.tar.bz2
+cd project/
+
+fig stop
+archive_filename=devblog-backup.tar.bz2
+
+bakthat restore $archive_filename
+docker run --volumes-from project_data_1 -v $(pwd):/backup ubuntu tar -vxjf /backup/${archive_filename}
+
+fig -f fig-production.yml up -d
